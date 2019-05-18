@@ -66,7 +66,7 @@ public class MainUi {
 	}
 	
 	private static JButton createOkButton(){
-		return new JButton(new AbstractAction("VÃ©rifier") { //ajouter l'action du bouton
+		return new JButton(new AbstractAction("Vérifier") { //ajouter l'action du bouton
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -74,7 +74,7 @@ public class MainUi {
 					
 					@Override
 					public void run() { // c'est un runnable
-						System.out.println("J'ai cliquÃ© sur Ok");
+						System.out.println("J'ai cliqué sur Ok");
 					}
 				});
 			}

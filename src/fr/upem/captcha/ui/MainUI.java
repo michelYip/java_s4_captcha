@@ -2,6 +2,7 @@ package fr.upem.captcha.ui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -9,8 +10,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -21,18 +27,27 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import fr.upem.capcha.ui.MainUi;
+import fr.upem.captcha.captchamanager.CaptchaManager;
+import fr.upem.captcha.ui.MainUI;
 
 public class MainUI {
-private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	
-	public static void main(String[] args) throws IOException {
-		JFrame frame = new JFrame("Capcha"); // Création de la fenêtre principale
+	private final static int width = 1200;
+	private final static int height = 800;	
+
+	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
+	
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+		System.out.println("Lancement de l'affichage");
+		
+		CaptchaManager captchaManager = CaptchaManager.getInstance();
+		
+		JFrame frame = new JFrame("Captcha Michel YIP & Guillaume LOLLIER"); // Création de la fenêtre principale
 		
 		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
 		
 		frame.setLayout(layout);  // affection du layout dans la fenêtre.
-		frame.setSize(1024, 768); // définition de la taille
+		frame.setSize(width, height); // définition de la taille
 		frame.setResizable(false);  // On définit la fenÃªtre comme non redimentionnable
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
@@ -41,7 +56,7 @@ private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 		JButton okButton = createOkButton();
 
 		
-//		frame.add(createLabelImage("centre ville.jpg")); //ajouter des composants Ã  la fenÃªtre
+//		frame.add(createLabelImage("../images/animaux/singe/01.jpg")); //ajouter des composants Ã  la fenÃªtre
 //		frame.add(createLabelImage("le havre.jpg"));
 //		frame.add(createLabelImage("panneau 70.jpg"));
 //		frame.add(createLabelImage("panneaubleu-carre.jpeg"));
@@ -51,7 +66,9 @@ private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 //		frame.add(createLabelImage("ville espace verts.jpg"));
 //		frame.add(createLabelImage("voie pieton.jpg"));
 		
-		
+		for (URL image : captchaManager.getCaptchaImages()) {
+			frame.add(createLabelImage(image));
+		}
 		
 		frame.add(new JTextArea("Cliquez n'importe où ... juste pour tester l'interface !"));
 		
@@ -82,9 +99,10 @@ private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 		});
 	}
 	
-	private static JLabel createLabelImage(String imageLocation) throws IOException{
+	private static JLabel createLabelImage(URL imageLocation) throws IOException{
 		
-		final URL url = MainUi.class.getResource(imageLocation); //Aller chercher les images !! IMPORTANT 
+		//final URL url = MainUi.class.getResource(imageLocation); //Aller chercher les images !! IMPORTANT 
+		final URL url = imageLocation;
 		
 		System.out.println(url); 
 		

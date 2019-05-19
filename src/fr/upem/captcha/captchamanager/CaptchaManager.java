@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.sun.tools.javac.util.List;
+
 import fr.upem.captcha.images.Category;
 import fr.upem.captcha.images.animaux.Animaux;
 import fr.upem.captcha.images.animaux.chat.Chat;
@@ -24,6 +26,8 @@ public class CaptchaManager {
 	private final static int MIN_NUMBER_OF_CORRECT_IMAGES = 3;
 	private final static int MAX_NUMBER_OF_CORRECT_IMAGES = 6;
 	private final static int GRID_SIZE = 9;
+	
+	private int correctImagesNumber;
 	
 	private final static CaptchaManager instance = new CaptchaManager();
 	
@@ -89,10 +93,19 @@ public class CaptchaManager {
 		correctCategories.clear();
 	}
 	
+	public void setCorrectImagesNumber(int number) {
+		correctImagesNumber = number;
+	}
+	public int getCorrectImageNumber() {
+		return correctImagesNumber;
+	}
+	
+	
 	public void setCaptchaImages() {
 		System.out.println("setCaptchaImages");
 		captchaImages.clear();
-		int correctImagesNumber = MIN_NUMBER_OF_CORRECT_IMAGES + (int)(Math.random() * ((MAX_NUMBER_OF_CORRECT_IMAGES - MIN_NUMBER_OF_CORRECT_IMAGES) + 1));
+		int tmp =  MIN_NUMBER_OF_CORRECT_IMAGES + (int)(Math.random() * ((MAX_NUMBER_OF_CORRECT_IMAGES - MIN_NUMBER_OF_CORRECT_IMAGES) + 1));
+		setCorrectImagesNumber(tmp);
 		System.out.println("correctImagesNumber = " + correctImagesNumber);
 		
 		ArrayList<URL> correctImagesURL = new ArrayList<URL>();
@@ -144,5 +157,17 @@ public class CaptchaManager {
 	}
 	public static final CaptchaManager getInstance() {
 		return instance;
+	}
+	
+	public boolean captchaIsCorrect(ArrayList<URL> selectedImages) {
+		System.out.println("Checking if captcha is correct");
+		if(getCorrectImageNumber() != selectedImages.size()) {
+			System.out.println("The number of picked images isn't good !");
+			return false;
+		}
+		for(URL item : selectedImages) {
+			
+		}
+		return true;
 	}
 }

@@ -2,7 +2,7 @@
  * 
  */
 /**
- * @author G u i l l a u m e
+ * @author Guillaume Lollier & Michel Yip
  *
  */
 package fr.upem.captcha.captchamanager;

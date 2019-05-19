@@ -18,6 +18,7 @@ import fr.upem.captcha.images.legumes.jaune.Jaune;
 import fr.upem.captcha.images.legumes.rouge.Rouge;
 import fr.upem.captcha.images.legumes.vert.Vert;
 
+
 public class CaptchaManager {
 	private final static int MAX_DIFFICULTY = 4;
 	private final static int MIN_NUMBER_OF_CORRECT_IMAGES = 3;
@@ -110,6 +111,7 @@ public class CaptchaManager {
 		for (int i = 0; i < (GRID_SIZE - correctImagesNumber); i++) captchaImages.add(incorrectImagesURL.get(i));
 		
 		Collections.shuffle(captchaImages);	
+		
 	}
 	
 	public ArrayList<URL> getCaptchaImages(){
@@ -129,4 +131,7 @@ public class CaptchaManager {
 		System.out.println("test");
 	}
 	
+	public static final CaptchaManager getInstance() {
+		return instance;
+	}
 }

@@ -21,41 +21,57 @@ public abstract class Category implements Images {
 	}
 	
 	@Override
-	public List<URL> getPhotos(){
+	public List<URL> getPhotos() {
 		photos.clear();
 		
 		String packageName = "src/"+this.getClass().getPackage().getName();
-		String curPath = packageName.replace('.', '/');
+		String currentPath = packageName.replace('.', '/');
+		Path currentRelativePath = Paths.get(currentPath);
 		
-		Path relativePath = Paths.get(curPath);
+		// Getting all sub directories
+		List<String> directories = null;
 
-		//TODO : get Photos from directories
-		List<String> dir = null;
 		try {
-			dir = Files.walk(relativePath, 1).map(Path::getFileName).map(Path::toString).filter(n -> !n.contains(".")).collect(Collectors.toList());
-			dir.remove(0);
+			directories = Files.walk(currentRelativePath, 1)
+			        .map(Path::getFileName)
+			        .map(Path::toString)
+			        .filter(n -> !n.contains("."))
+			        .collect(Collectors.toList());
+			directories.remove(0); // Remove the current directory
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		
-		for (String subDir : dir) {
-			Path childPath = Paths.get(curPath + "/" + subDir);
-			List <String> images = null;
+		// For each categogy, we get the sub-directory
+		for (String directory : directories) {
+			Path childPath = Paths.get(currentPath + "/" + directory);
+			// Getting images
+			List<String> images = null;
 			try {
-				images = Files.walk(childPath, 2).map(Path::getFileName).map(Path::toString).filter(n -> n.contains(".jpg")).collect(Collectors.toList());
+				images = Files.walk(childPath, 2)
+				        .map(Path::getFileName)
+				        .map(Path::toString)
+				        .filter(n -> n.contains(".jpg"))
+				        .collect(Collectors.toList());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			for (String image : images) {
-				photos.add(this.getClass().getResource(dir + "/" + image));
+				photos.add(this.getClass().getResource(directory + "/" + image));
 			}
 		}
-		
-		if (dir.isEmpty()) {
+
+		// S'il n'y a pas de sous dossier, on récupère les images directement dans le dossier actuel
+		if (directories.isEmpty()) {
 			List<String> images = null;
 			try {
-				images = Files.walk(relativePath,  1).map(Path::getFileName).map(Path::toString).filter(n -> n.contains("jpeg")).collect(Collectors.toList());
-			} catch (IOException e){
+				images = Files.walk(currentRelativePath, 1)
+				        .map(Path::getFileName)
+				        .map(Path::toString)
+				        .filter(n -> n.contains(".jpg"))
+				        .collect(Collectors.toList());
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			for (String image : images) {
@@ -64,7 +80,8 @@ public abstract class Category implements Images {
 		}
 		
 		return photos;
-		
 	}
+	
+	
 	
 }

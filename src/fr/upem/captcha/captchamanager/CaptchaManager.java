@@ -30,10 +30,10 @@ public class CaptchaManager {
 	private ArrayList<Category> correctCategories;
 	private int difficulty;
 	private ArrayList<URL> captchaImages;
-	private ArrayList<URL> correctImages;
+	public ArrayList<URL> correctImages;
 	
 	private CaptchaManager() {
-		difficulty = 1;
+		difficulty = 3;
 		categories = new ArrayList<Category>();
 		getCategories();
 		correctCategories = new ArrayList<Category>();
@@ -127,6 +127,13 @@ public class CaptchaManager {
 	
 	public static void main(String [] argv) {
 		System.out.println("test");
+		System.out.println("Correct Categories...");
+		for (Category cat : instance.correctCategories) {
+			System.out.println(cat.getClass());
+		}
+		System.out.println("Captcha Images...");
+		for (URL url : instance.getCaptchaImages()) {
+			System.out.println(url);
+		}
 	}
-	
 }

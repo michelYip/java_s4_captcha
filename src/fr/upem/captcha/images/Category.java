@@ -20,6 +20,7 @@ public abstract class Category implements Images {
 		getPhotos();
 	}
 	
+	
 	@Override
 	public List<URL> getPhotos() {
 		photos.clear();
@@ -81,4 +82,9 @@ public abstract class Category implements Images {
 		
 		return photos;
 	}	
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 }

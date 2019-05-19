@@ -32,7 +32,7 @@ import fr.upem.captcha.ui.MainUI;
 
 public class MainUI {
 	
-	private final static int width = 1200;
+	private final static int width = 800;
 	private final static int height = 800;	
 
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
@@ -54,23 +54,14 @@ public class MainUI {
 		 
 		
 		JButton okButton = createOkButton();
-
-		
-//		frame.add(createLabelImage("../images/animaux/singe/01.jpg")); //ajouter des composants à la fenêtre
-//		frame.add(createLabelImage("le havre.jpg"));
-//		frame.add(createLabelImage("panneau 70.jpg"));
-//		frame.add(createLabelImage("panneaubleu-carre.jpeg"));
-//		frame.add(createLabelImage("parking.jpg"));
-//		frame.add(createLabelImage("route panneau.jpg"));
-//		frame.add(createLabelImage("tour eiffel.jpg"));
-//		frame.add(createLabelImage("ville espace verts.jpg"));
-//		frame.add(createLabelImage("voie pieton.jpg"));
 		
 		for (URL image : captchaManager.getCaptchaImages()) {
 			frame.add(createLabelImage(image));
 		}
 		
-		frame.add(new JTextArea("Cliquez n'importe o� ... juste pour tester l'interface !"));
+		System.out.println(captchaManager.getCorrectCategories());
+		
+		frame.add(new JTextArea("Cliquez sur les images contenant \n"+ captchaManager.getCorrectCategories()));
 		
 		
 		frame.add(okButton);
@@ -121,7 +112,7 @@ public class MainUI {
 			
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-		
+				
 			}
 			
 			@Override
@@ -141,7 +132,7 @@ public class MainUI {
 					@Override
 					public void run() {
 						if(!isSelected){
-							label.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+							label.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 							isSelected = true;
 							selectedImages.add(url);
 						}

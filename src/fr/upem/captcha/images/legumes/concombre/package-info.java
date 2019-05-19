@@ -5,4 +5,4 @@
  * @authors Guillaume Lollier & Michel Yip
  *
  */
-package fr.upem.captcha.images.legumes.jaune;
+package fr.upem.captcha.images.legumes.concombre;

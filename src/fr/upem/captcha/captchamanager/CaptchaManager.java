@@ -14,9 +14,9 @@ import fr.upem.captcha.images.boissons.alcool.Alcool;
 import fr.upem.captcha.images.boissons.jus.Jus;
 import fr.upem.captcha.images.boissons.sodas.Sodas;
 import fr.upem.captcha.images.legumes.Legumes;
-import fr.upem.captcha.images.legumes.jaune.Jaune;
-import fr.upem.captcha.images.legumes.rouge.Rouge;
-import fr.upem.captcha.images.legumes.vert.Vert;
+import fr.upem.captcha.images.legumes.concombre.Concombre;
+import fr.upem.captcha.images.legumes.endive.Endive;
+import fr.upem.captcha.images.legumes.tomate.Tomate;
 
 
 public class CaptchaManager {
@@ -59,9 +59,9 @@ public class CaptchaManager {
 				categories.add(new Alcool());
 				categories.add(new Jus());
 				categories.add(new Sodas());
-				categories.add(new Jaune());
-				categories.add(new Rouge());
-				categories.add(new Vert());
+				categories.add(new Endive());
+				categories.add(new Tomate());
+				categories.add(new Concombre());
 				break;
 			default:
 				break;
@@ -74,6 +74,10 @@ public class CaptchaManager {
 		for (int i = 0; i < difficulty; i++) {
 			correctCategories.add(categories.get(i));
 		}
+	}
+	
+	public ArrayList<Category> getCorrectCategories(){
+		return correctCategories;
 	}
 	
 	public void increaseDifficulty() {

@@ -84,8 +84,11 @@ public class MainUI {
 					@Override
 					public void run() { // c'est un runnable
 						CaptchaManager captchaManager = CaptchaManager.getInstance();
-						System.out.println("J'ai cliqué sur Ok");
-						captchaManager.captchaIsCorrect(selectedImages);
+						if(captchaManager.captchaIsCorrect(selectedImages) ) {
+							System.out.println("LE CAPTCHA EST BON");
+						}else {
+							System.out.println("You're a robot or you made mistakes");
+						}
 					}
 				});
 			}
@@ -137,7 +140,7 @@ public class MainUI {
 							label.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 							isSelected = true;
 							selectedImages.add(url);
-							System.out.println(selectedImages);
+							//System.out.println(selectedImages);
 						}
 						else {
 							label.setBorder(BorderFactory.createEmptyBorder());

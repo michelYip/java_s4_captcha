@@ -165,9 +165,22 @@ public class CaptchaManager {
 			System.out.println("The number of picked images isn't good !");
 			return false;
 		}
-		for(URL item : selectedImages) {
-			
+		System.out.println(getCorrectCategories());
+
+		for (URL image : selectedImages) {
+		    boolean inCat = false;
+		    for (Category cat : getCorrectCategories()) {
+		        if (cat.isPhotoCorrect(image)) {
+		            inCat = true;
+		        }
+		    }
+		    if (inCat == false) {
+              System.out.println("Some pictures are not from the right category");
+		      return false;
+		    }
 		}
 		return true;
+		
 	}
+	
 }

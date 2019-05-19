@@ -87,4 +87,11 @@ public abstract class Category implements Images {
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
+	
+	@Override
+	public boolean isPhotoCorrect(URL url) {
+		String currentCategory = this.getClass().getPackage().getName().replace(".", "/");
+		//System.out.println("current category " + currentCategory);
+		return url.toString().contains(currentCategory);
+	}
 }

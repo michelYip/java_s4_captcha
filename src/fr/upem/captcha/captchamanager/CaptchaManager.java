@@ -138,4 +138,7 @@ public class CaptchaManager {
 			System.out.println(url);
 		}
 	}
+	public static final CaptchaManager getInstance() {
+		return instance;
+	}
 }

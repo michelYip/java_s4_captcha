@@ -62,7 +62,7 @@ public abstract class Category implements Images {
 			}
 		}
 
-		// S'il n'y a pas de sous dossier, on rÃ©cupÃ¨re les images directement dans le dossier actuel
+		// S'il n'y a pas de sous dossier, on récupère les images directement dans le dossier actuel
 		if (directories.isEmpty()) {
 			List<String> images = null;
 			try {
@@ -80,8 +80,5 @@ public abstract class Category implements Images {
 		}
 		
 		return photos;
-	}
-	
-	
-	
+	}	
 }

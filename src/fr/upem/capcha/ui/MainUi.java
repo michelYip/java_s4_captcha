@@ -52,7 +52,7 @@ public class MainUi {
 		
 		
 		
-		frame.add(new JTextArea("Cliquez n'importe oÃ¹ ... juste pour tester l'interface !"));
+		frame.add(new JTextArea("Cliquez n'importe où ... juste pour tester l'interface !"));
 		
 		
 		frame.add(okButton);

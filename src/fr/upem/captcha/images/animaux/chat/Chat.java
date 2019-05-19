@@ -1,5 +1,7 @@
 package fr.upem.captcha.images.animaux.chat;
 
-public class Chat {
+import fr.upem.captcha.images.animaux.Animaux;
+
+public class Chat extends Animaux{
 
 }

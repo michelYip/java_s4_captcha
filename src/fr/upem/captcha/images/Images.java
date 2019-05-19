@@ -1,5 +1,5 @@
 package fr.upem.captcha.images;
 
-public class Images {
+public interface Images {
 
 }

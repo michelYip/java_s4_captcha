@@ -1,5 +1,7 @@
 package fr.upem.captcha.images.animaux.singe;
 
-public class Singe {
+import fr.upem.captcha.images.animaux.Animaux;
+
+public class Singe extends Animaux{
 
 }

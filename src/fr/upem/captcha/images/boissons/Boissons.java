@@ -1,5 +1,7 @@
 package fr.upem.captcha.images.boissons;
 
-public class Boissons {
+import fr.upem.captcha.images.Category;
+
+public class Boissons extends Category{
 
 }

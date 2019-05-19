@@ -1,5 +1,7 @@
 package fr.upem.captcha.images.legumes.rouge;
 
-public class Rouge {
+import fr.upem.captcha.images.legumes.Legumes;
+
+public class Rouge extends Legumes{
 
 }

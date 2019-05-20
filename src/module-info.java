@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author myip
- *
- */
-module captcha {
-}

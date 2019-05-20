@@ -1,5 +1,6 @@
 package fr.upem.captcha.ui;
 
+import java.util.concurrent.TimeUnit;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -12,11 +13,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -31,68 +35,133 @@ import fr.upem.captcha.captchamanager.CaptchaManager;
 import fr.upem.captcha.ui.MainUI;
 
 public class MainUI {
+	private final static int TIMER = 3000;
 	
 	private final static int width = 800;
 	private final static int height = 800;	
+	private static JFrame frame = new JFrame("Captcha Guillaume LOLLIER & Michel YIP");
+	private static CaptchaManager captchaManager = CaptchaManager.getInstance();
 
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
 		System.out.println("Lancement de l'affichage");
 		
-		CaptchaManager captchaManager = CaptchaManager.getInstance();
+		GridLayout layout = createLayout();
 		
-		JFrame frame = new JFrame("Captcha Michel YIP & Guillaume LOLLIER"); // Création de la fenêtre principale
+		frame.setLayout(layout);
+		frame.setSize(width, height);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		GridLayout layout = createLayout();  // Création d'un layout de type Grille avec 4 lignes et 3 colonnes
-		
-		frame.setLayout(layout);  // affection du layout dans la fenêtre.
-		frame.setSize(width, height); // définition de la taille
-		frame.setResizable(false);  // On définit la fenÃªtre comme non redimentionnable
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Lorsque l'on ferme la fenêtre on quitte le programme.
-		 
-		
-		JButton okButton = createOkButton();
-		
-		for (URL image : captchaManager.getCaptchaImages()) {
-			frame.add(createLabelImage(image));
-		}
-		
-		System.out.println(captchaManager.getCorrectCategories());
-		
-		frame.add(new JTextArea("Cliquez sur les images contenant \n"+ captchaManager.getCorrectCategories()));
-		
-		
-		frame.add(okButton);
-		
-		frame.setVisible(true);
+		createApplicationWindow();
 	}
-	
 	
 	private static GridLayout createLayout(){
 		return new GridLayout(4,3);
 	}
 	
+	public static void createApplicationWindow() {
+		frame.getContentPane().add(new JTextArea("Are you a bot ?"));
+		frame.getContentPane().add(new JButton(new AbstractAction("Yes") {
+			public void actionPerformed(ActionEvent arg0) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						System.exit(0);
+					}
+				});
+			}
+		}));
+		frame.getContentPane().add(new JButton(new AbstractAction("No") {
+			public void actionPerformed(ActionEvent arg0) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						frame.getContentPane().removeAll();
+						drawGrid("");
+					}
+				});
+			}
+		}));
+		frame.setVisible(true);
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
+	}
+	
+	public static void createApplicationClosingWindow(String feedback) {
+		frame.getContentPane().add(new JTextArea(feedback));
+		frame.getContentPane().add(new JButton(new AbstractAction("Leave the Captcha") {
+			public void actionPerformed(ActionEvent arg0) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						System.exit(0);
+					}
+				});
+			}
+		}));
+		frame.setVisible(true);
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
+	}
+	
+	public static void drawGrid(String feedback) {
+		try {	
+			for (URL image : captchaManager.getCaptchaImages()) {
+				frame.add(createLabelImage(image));
+			}
+			frame.getContentPane().add(createInstructionText());
+			frame.getContentPane().add(createOkButton());
+			frame.getContentPane().add(createFeedbackText(feedback));
+			frame.setVisible(true);
+			frame.getContentPane().validate();
+			frame.getContentPane().repaint();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static JTextArea createInstructionText() {
+		return new JTextArea("Difficulty : "+ captchaManager.getDifficulty() 
+				+"\nClick on the images with the following categories :\n" 
+				+ captchaManager.getCorrectCategories());
+	}
+	
 	private static JButton createOkButton(){
-		return new JButton(new AbstractAction("Vérifier") { //ajouter l'action du bouton
+		return new JButton(new AbstractAction("VÃ©rifier") {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				EventQueue.invokeLater(new Runnable() { // faire des choses dans l'interface donc appeler cela dans la queue des événements
+				EventQueue.invokeLater(new Runnable() {
 					
 					@Override
-					public void run() { // c'est un runnable
+					public void run() {
 						CaptchaManager captchaManager = CaptchaManager.getInstance();
-						if(captchaManager.captchaIsCorrect(selectedImages) ) {
-							System.out.println("LE CAPTCHA EST BON");
-						}else {
-							System.out.println("You're a robot or you made mistakes");
+						if(captchaManager.captchaIsCorrect(selectedImages)) {
+							frame.getContentPane().removeAll();
+							createApplicationClosingWindow("The captcha is correct !");
+						} else {
+							if (captchaManager.getDifficulty() >= captchaManager.getMaxDifficulty()) {
+								frame.getContentPane().removeAll();
+								createApplicationClosingWindow("Permission denied !");
+							} else {
+								captchaManager.clearCategories();
+								captchaManager.increaseDifficulty();
+								captchaManager.getCategories();
+								captchaManager.setCorrectCategories(captchaManager.getDifficulty());
+								captchaManager.setCaptchaImages();
+								frame.getContentPane().removeAll();
+								drawGrid("You're a robot or you made mistakes.\nIncreasing difficulty... Try again");
+								selectedImages.clear();
+							}
+							
 						}
 					}
 				});
 			}
 		});
+	}
+	
+	public static JTextArea createFeedbackText(String feedback) {
+		return new JTextArea(feedback);
 	}
 	
 	private static JLabel createLabelImage(URL imageLocation) throws IOException{
@@ -105,9 +174,9 @@ public class MainUI {
 		BufferedImage img = ImageIO.read(url); //lire l'image
 		Image sImage = img.getScaledInstance(1024/3,768/4, Image.SCALE_SMOOTH); //redimentionner l'image
 		
-		final JLabel label = new JLabel(new ImageIcon(sImage)); // créer le composant pour ajouter l'image dans la fenÃªtre
+		final JLabel label = new JLabel(new ImageIcon(sImage)); // crï¿½er le composant pour ajouter l'image dans la fenÃªtre
 		
-		label.addMouseListener(new MouseListener() { //Ajouter le listener d'évènement de souris
+		label.addMouseListener(new MouseListener() { //Ajouter le listener d'ï¿½vï¿½nement de souris
 			private boolean isSelected = false;
 			
 			
@@ -131,7 +200,7 @@ public class MainUI {
 			}
 			
 			@Override
-			public void mouseClicked(MouseEvent arg0) { //ce qui nous intéresse c'est lorsqu'on clique sur une image, il y a donc des choses à faire ici
+			public void mouseClicked(MouseEvent arg0) { //ce qui nous intï¿½resse c'est lorsqu'on clique sur une image, il y a donc des choses ï¿½ faire ici
 				EventQueue.invokeLater(new Runnable() { 
 					
 					@Override

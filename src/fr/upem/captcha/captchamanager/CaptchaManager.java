@@ -4,8 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.sun.tools.javac.util.List;
-
 import fr.upem.captcha.images.Category;
 import fr.upem.captcha.images.animaux.Animaux;
 import fr.upem.captcha.images.animaux.chat.Chat;
@@ -38,7 +36,7 @@ public class CaptchaManager {
 	public ArrayList<URL> correctImages;
 	
 	private CaptchaManager() {
-		difficulty = 3;
+		difficulty = 1;
 		categories = new ArrayList<Category>();
 		getCategories();
 		correctCategories = new ArrayList<Category>();
@@ -50,25 +48,20 @@ public class CaptchaManager {
 	}
 	
 	public void getCategories() {
-		switch(difficulty) {
-			case 1:
-				categories.add(new Animaux());
-				categories.add(new Boissons());
-				categories.add(new Legumes());
-				break;
-			case 3:
-				categories.add(new Chat());
-				categories.add(new Poulet());
-				categories.add(new Singe());
-				categories.add(new Alcool());
-				categories.add(new Jus());
-				categories.add(new Sodas());
-				categories.add(new Endive());
-				categories.add(new Tomate());
-				categories.add(new Concombre());
-				break;
-			default:
-				break;
+		if (difficulty <= 2) {
+			categories.add(new Animaux());
+			categories.add(new Boissons());
+			categories.add(new Legumes());
+		} else {
+			categories.add(new Chat());
+			categories.add(new Poulet());
+			categories.add(new Singe());
+			categories.add(new Alcool());
+			categories.add(new Jus());
+			categories.add(new Sodas());
+			categories.add(new Endive());
+			categories.add(new Tomate());
+			categories.add(new Concombre());
 		}
 	}
 	
@@ -78,10 +71,19 @@ public class CaptchaManager {
 		for (int i = 0; i < difficulty; i++) {
 			correctCategories.add(categories.get(i));
 		}
+		System.out.println("Correct : " + getCorrectCategories());
 	}
 	
 	public ArrayList<Category> getCorrectCategories(){
 		return correctCategories;
+	}
+	
+	public int getDifficulty() {
+		return difficulty;
+	}
+	
+	public int getMaxDifficulty() {
+		return MAX_DIFFICULTY;
 	}
 	
 	public void increaseDifficulty() {
@@ -98,12 +100,12 @@ public class CaptchaManager {
 	}
 	public int getCorrectImageNumber() {
 		return correctImagesNumber;
-	}
-	
+	}	
 	
 	public void setCaptchaImages() {
 		System.out.println("setCaptchaImages");
 		captchaImages.clear();
+		correctImages.clear();
 		int tmp =  MIN_NUMBER_OF_CORRECT_IMAGES + (int)(Math.random() * ((MAX_NUMBER_OF_CORRECT_IMAGES - MIN_NUMBER_OF_CORRECT_IMAGES) + 1));
 		setCorrectImagesNumber(tmp);
 		System.out.println("correctImagesNumber = " + correctImagesNumber);
@@ -144,29 +146,15 @@ public class CaptchaManager {
 		return true;
 	}
 	
-	public static void main(String [] argv) {
-		System.out.println("test");
-		System.out.println("Correct Categories...");
-		for (Category cat : instance.correctCategories) {
-			System.out.println(cat.getClass());
-		}
-		System.out.println("Captcha Images...");
-		for (URL url : instance.getCaptchaImages()) {
-			System.out.println(url);
-		}
-	}
 	public static final CaptchaManager getInstance() {
 		return instance;
 	}
 	
 	public boolean captchaIsCorrect(ArrayList<URL> selectedImages) {
-		System.out.println("Checking if captcha is correct");
 		if(getCorrectImageNumber() != selectedImages.size()) {
 			System.out.println("The number of picked images isn't good !");
 			return false;
 		}
-		System.out.println(getCorrectCategories());
-
 		for (URL image : selectedImages) {
 		    boolean inCat = false;
 		    for (Category cat : getCorrectCategories()) {

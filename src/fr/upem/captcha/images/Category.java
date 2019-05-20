@@ -43,7 +43,6 @@ public abstract class Category implements Images {
 			e.printStackTrace();
 		}
 
-		
 		// For each categogy, we get the sub-directory
 		for (String directory : directories) {
 			Path childPath = Paths.get(currentPath + "/" + directory);
@@ -63,7 +62,7 @@ public abstract class Category implements Images {
 			}
 		}
 
-		// S'il n'y a pas de sous dossier, on récupère les images directement dans le dossier actuel
+		// S'il n'y a pas de sous dossier, on rï¿½cupï¿½re les images directement dans le dossier actuel
 		if (directories.isEmpty()) {
 			List<String> images = null;
 			try {

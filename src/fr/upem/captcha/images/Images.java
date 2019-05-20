@@ -3,9 +3,11 @@ package fr.upem.captcha.images;
 import java.net.URL;
 
 import java.util.List;
-import java.util.ArrayList;
 
-
+/**
+ * This interface implements the main methods of an Image.
+ * @author Guillaume Lollier & Michel Yip
+ */
 public interface Images {
 	public List<URL> getPhotos();
 	

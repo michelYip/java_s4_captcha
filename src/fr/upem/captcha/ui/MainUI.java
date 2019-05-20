@@ -1,9 +1,7 @@
 package fr.upem.captcha.ui;
 
-import java.util.concurrent.TimeUnit;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -11,16 +9,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -34,9 +24,12 @@ import javax.swing.JTextArea;
 import fr.upem.captcha.captchamanager.CaptchaManager;
 import fr.upem.captcha.ui.MainUI;
 
-public class MainUI {
-	private final static int TIMER = 3000;
-	
+/**
+ * This class generate the main interface of the application. 
+ * It listens to event between the user and the interface.
+ * @author Guillaume Lollier & Michel Yip
+ */
+public class MainUI {	
 	private final static int width = 800;
 	private final static int height = 800;	
 	private static JFrame frame = new JFrame("Captcha Guillaume LOLLIER & Michel YIP");
@@ -45,8 +38,6 @@ public class MainUI {
 	private static ArrayList<URL> selectedImages = new ArrayList<URL>();
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
-		System.out.println("Lancement de l'affichage");
-		
 		GridLayout layout = createLayout();
 		
 		frame.setLayout(layout);
@@ -57,10 +48,17 @@ public class MainUI {
 		createApplicationWindow();
 	}
 	
+	/**
+	 * Return a grid layout
+	 * @return a grid layout
+	 */
 	private static GridLayout createLayout(){
 		return new GridLayout(4,3);
 	}
 	
+	/**
+	 * Create the main window of the application
+	 */
 	public static void createApplicationWindow() {
 		frame.getContentPane().add(new JTextArea("Are you a bot ?"));
 		frame.getContentPane().add(new JButton(new AbstractAction("Yes") {
@@ -87,6 +85,10 @@ public class MainUI {
 		frame.getContentPane().repaint();
 	}
 	
+	/**
+	 * Create the closing window of the application with a feedback
+	 * @param feedback message to show to user
+	 */
 	public static void createApplicationClosingWindow(String feedback) {
 		frame.getContentPane().add(new JTextArea(feedback));
 		frame.getContentPane().add(new JButton(new AbstractAction("Leave the Captcha") {
@@ -103,6 +105,11 @@ public class MainUI {
 		frame.getContentPane().repaint();
 	}
 	
+	/**
+	 * Draw the grid of the captcha based on the instance of captcha manager.
+	 * Show any feedback to the user
+	 * @param feedback message to show the user
+	 */
 	public static void drawGrid(String feedback) {
 		try {	
 			for (URL image : captchaManager.getCaptchaImages()) {
@@ -119,14 +126,22 @@ public class MainUI {
 		}
 	}
 	
+	/**
+	 * Create the instruction textbox for the user
+	 * @return the instruction textbox 
+	 */
 	public static JTextArea createInstructionText() {
 		return new JTextArea("Difficulty : "+ captchaManager.getDifficulty() 
 				+"\nClick on the images with the following categories :\n" 
 				+ captchaManager.getCorrectCategories());
 	}
 	
+	/**
+	 * Create the button used to validate the captcha
+	 * @return the button used to validate the captcha
+	 */
 	private static JButton createOkButton(){
-		return new JButton(new AbstractAction("Vérifier") {
+		return new JButton(new AbstractAction("Validate captcha") {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -160,23 +175,30 @@ public class MainUI {
 		});
 	}
 	
+	/**
+	 * Create the feedback message textbox to show the user
+	 * @param feedback
+	 * @return the feedback message textbox
+	 */
 	public static JTextArea createFeedbackText(String feedback) {
 		return new JTextArea(feedback);
 	}
 	
+	/**
+	 * Create an image from the imageLocation parameter
+	 * @param imageLocation
+	 * @return the image as a JLabel
+	 * @throws IOException
+	 */
 	private static JLabel createLabelImage(URL imageLocation) throws IOException{
-		
-		//final URL url = MainUi.class.getResource(imageLocation); //Aller chercher les images !! IMPORTANT 
 		final URL url = imageLocation;
 		
-		System.out.println(url); 
+		BufferedImage img = ImageIO.read(url);
+		Image sImage = img.getScaledInstance(1024/3,768/4, Image.SCALE_SMOOTH);
 		
-		BufferedImage img = ImageIO.read(url); //lire l'image
-		Image sImage = img.getScaledInstance(1024/3,768/4, Image.SCALE_SMOOTH); //redimentionner l'image
+		final JLabel label = new JLabel(new ImageIcon(sImage));
 		
-		final JLabel label = new JLabel(new ImageIcon(sImage)); // cr�er le composant pour ajouter l'image dans la fenêtre
-		
-		label.addMouseListener(new MouseListener() { //Ajouter le listener d'�v�nement de souris
+		label.addMouseListener(new MouseListener() {
 			private boolean isSelected = false;
 			
 			
@@ -200,7 +222,7 @@ public class MainUI {
 			}
 			
 			@Override
-			public void mouseClicked(MouseEvent arg0) { //ce qui nous int�resse c'est lorsqu'on clique sur une image, il y a donc des choses � faire ici
+			public void mouseClicked(MouseEvent arg0) {
 				EventQueue.invokeLater(new Runnable() { 
 					
 					@Override
@@ -209,7 +231,6 @@ public class MainUI {
 							label.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 							isSelected = true;
 							selectedImages.add(url);
-							//System.out.println(selectedImages);
 						}
 						else {
 							label.setBorder(BorderFactory.createEmptyBorder());

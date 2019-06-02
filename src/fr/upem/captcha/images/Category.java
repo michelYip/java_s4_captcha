@@ -24,7 +24,10 @@ public abstract class Category implements Images {
 		getPhotos();
 	}
 	
-	
+	/**
+	 * Get the list of URL from the images of the current category
+	 * @return the list of URL from the images of the current category
+	 */
 	@Override
 	public List<URL> getPhotos() {
 		listPhotos.clear();
@@ -65,11 +68,19 @@ public abstract class Category implements Images {
 		return listPhotos;
 	}	
 	
+	/**
+	 * Return the class name as a String
+	 * @return the class name as a String
+	 */
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
 	
+	/**
+	 * Return true if the url parameter is in the current category, false otherwise
+	 * @return true if the url parameter is in the current category, false otherwise
+	 */
 	@Override
 	public boolean isPhotoCorrect(URL url) {
 		String currentCategory = this.getClass().getPackage().getName().replace(".", "/");
